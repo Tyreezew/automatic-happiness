@@ -1,1 +1,1 @@
-# automatic-happiness
+# NOSQL Social Network API
