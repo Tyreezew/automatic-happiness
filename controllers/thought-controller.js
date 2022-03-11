@@ -18,26 +18,26 @@ const thoughtController = {
                 res.status(400).json(err);
             });
         },
-    addThought({ params, body }, res) {
-        Thought.create(body)
-            .then(({ _id }) => {
+    addThought(req, res) {
+        Thought.create(req.body)
+            .then((dbThoughtData) => {
                 return User.findOneAndUpdate(
-                    { _id: params.userId },
-                    { $push: { thoughts: _id } },
+                    { _id:req.body.userId },
+                    { $push: { thoughts: dbThoughtData._id } },
                     { new: true }
                 );
                 })
-            .then(dbThoughtData => {
-                if (!dbThoughtData) {
+            .then((dbUserData) => {
+                if (!dbUserData) {
                     res.status(404).json({ message: 'Incorrect thought data!' });
                         return;
                     }
-                    res.json(dbThoughtData);
+                    res.json({ mesaage: 'Thought successfully created!' });
                 })
                 .catch(err => res.json(err));
         },
-     updateThought({ params, body }, res) {
-        Thought.findByIdAndUpdate({ _id: params.thoughtId }, body, { runValidators: true, new: true })
+     updateThought(req, res) {
+        Thought.findByIdAndUpdate({ _id: params.thoughtId },{ $set: req.body}, { runValidators: true, new: true })
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
                     res.status(404).json({ message: 'No user found with this ID!' });
